@@ -49,20 +49,25 @@ module Mastermind
     end
 
     def correct_index?(g)
-      index_match = []
-      @selection.each_with_index {|val, i|
-        @selection.select {|c|
-          if c == g[i]
-            index_match.push(g[i])
-          end
-        }
-      }
-      puts "#{(index_match & @selection)} were in the correct order."
-      if (index_match & @selection) == @selection
+      # index_match = []
+      # @selection.each_with_index {|val, i|
+      #   @selection.select {|c|
+      #     if c == g[i]
+      #       index_match.push(g[i])
+      #     end
+      #   }
+      # }
+      # puts "#{(index_match & @selection)} were in the correct order."
+      # if (index_match & @selection) == @selection
+      #   true
+      # else
+      #   false
+      # end
+      if (@selection & g) == @selection
+        puts "All colors were in the correct order"
         true
       else
-        false
-      end
+        puts "#{(@selection & g)} were correctly placed."
     end
 
     def correct?(g)
