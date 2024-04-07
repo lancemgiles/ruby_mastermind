@@ -33,26 +33,44 @@ module Mastermind
           break
         else
           puts "Keep trying!"
-          return
+          
         end
       end
     end
 
-    def correct?(g)
-      @selection.each_with_index { |color, index|
-        if g[index] != color
-          if (@selection & g).any?
-            color_matches = (@selection & g)
-            puts "Color matches: #{color_matches.join(", ")}."
-          elsif @selection[index] == g[index]
-            index_matches = @selection.select {|c| @selection[index] == g[index]}
-            puts "Placement matches: #{index_matches.join(", ")}."
+    def correct_colors?(g)
+      if (@selection & @guesses).any?
+        puts "#{(@selection & @guesses)} are included colors"
+        true
+      else
+        puts "No color matches."
+        false
+      end
+    end
+
+    def correct_index?(g)
+      index_match = []
+      @selection.each_with_index {|val, i|
+        @selection.select {|val|
+          if val == g[i]
+            index_match.push(g[i])
           end
-          false
-        else
-          true
-        end
         }
+      }
+      puts "#{index_match} were in the correct order."
+      if (index_match & @selection) == @selection
+        true
+      else
+        false
+      end
+    end
+
+    def correct?(g)
+      if correct_colors?(g)
+        correct_index?(g)
+      else
+        false
+      end
     end
 
     def lose?
