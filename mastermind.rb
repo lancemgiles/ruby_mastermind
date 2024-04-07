@@ -51,9 +51,9 @@ module Mastermind
     def correct_index?(g)
       index_match = []
       @selection.each_with_index {|val, i|
-        @selection.select {|val|
-          if val == g[i]
-            index_match.unshift(g[i])
+        @selection.select {|c|
+          if c == g[i]
+            index_match.push(g[i])
           end
         }
       }
