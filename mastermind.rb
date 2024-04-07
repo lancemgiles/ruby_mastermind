@@ -15,12 +15,12 @@ module Mastermind
     end
 
     def get_random_colors
-      @selection = @colors.shuffle.slice(0,4)
+      @colors.shuffle.slice(0,4)
     end
 
     def play
+      @selection = get_random_colors
       while @remaining_turns <= MAX_TURNS
-        get_random_colors
         @players[1].get_guess
         if correct?(@guesses)
           puts "You won! You had #{@remaining_turns} turns left."
