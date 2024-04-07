@@ -33,7 +33,7 @@ module Mastermind
           break
         else
           puts "Keep trying!"
-          
+          puts "You have #{remaining_turns} turns left."
         end
       end
     end
@@ -53,11 +53,11 @@ module Mastermind
       @selection.each_with_index {|val, i|
         @selection.select {|val|
           if val == g[i]
-            index_match.push(g[i])
+            index_match.unshift(g[i])
           end
         }
       }
-      puts "#{index_match} were in the correct order."
+      puts "#{(index_match & @selection)} were in the correct order."
       if (index_match & @selection) == @selection
         true
       else
