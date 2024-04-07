@@ -2,13 +2,14 @@ module Mastermind
   MAX_TURNS = 12
 
   class Game
-    attr_reader :colors, :players, :role, :remaining_turns
+    attr_accessor :remaining_turns, :guesses, :selection
+    attr_reader :colors, :players, :role
     def initialize(player1, player2)
       @colors = ["red", "green", "blue", "yellow", "purple", "orange"]
       @players = [player1.new(self, :codemaker), player2.new(self, :codebreaker)]
       puts "The computer has a code of four colors. You must guess both the colors and the order."
       puts "You have twelve turns to break the computer's code!"
-      puts "The possible colors are: #{@colors.join(", ").}"
+      puts "The possible colors are: #{@colors.join(", ")}."
       puts "The colors will not repeat, and each place in the code has a color."
       @remaining_turns = 12
     end
@@ -16,12 +17,11 @@ module Mastermind
     def get_random_colors
       @selection = @colors.shuffle.slice(0,4)
     end
-    attr_accessor :selection
 
     def play
       while @remaining_turns <= MAX_TURNS
         get_random_colors
-        self.guesses = @players[1].get_guess
+        @players[1].get_guess
         if correct?(self.guesses)
           puts "You won! You had #{:remaining_turns} left."
           break
@@ -63,7 +63,6 @@ module Mastermind
         # return false
       # if completely correct
         # return true
-    end
     def lose?
       if @remaining_turns <= 0
         true
@@ -84,7 +83,6 @@ module Mastermind
     def to_s
       "Human Player, #{@role}"
     end
-    attr_accessor :guesses
     def get_guess
       guess = []
       puts "What is your guess for the first color?"
@@ -94,13 +92,15 @@ module Mastermind
       two = gets.chomp
       guess.push(two)
       puts "Third?"
-      three - gets.chomp
+      three = gets.chomp
       guess.push(three)
       puts "Final position?"
       four = gets.chomp
       guess.push(four)
-      puts "Your guess is #{@guess.join(", ")}."
-      guess
+      puts "Your guess is #{guess.join(", ")}."
+      @game.remaining_turns -= 1
+      @game.guesses = guess
+    end
   end
 
   class Computer < Player  
@@ -112,3 +112,4 @@ end
 
 include Mastermind
 game = Game.new(Computer, Human)
+game.play
