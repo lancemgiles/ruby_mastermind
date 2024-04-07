@@ -21,8 +21,8 @@ module Mastermind
     def play
       while @remaining_turns <= MAX_TURNS
         get_random_colors
-        guess = @players[1].get_guess
-        if correct?(guess)
+        self.guesses = @players[1].get_guess
+        if correct?(self.guesses)
           puts "You won! You had #{:remaining_turns} left."
           break
         elsif lose?
@@ -38,6 +38,21 @@ module Mastermind
 
     def correct?(g)
       # for each color in selection
+      @selection.each_with_index { |color, index|
+        unless g[index] == color
+          if (@selection & g).any?
+            color_matches = (@selection & g)
+            puts "Color matches: #{color_matches.join(", ")}."
+          elsif @selection[index] == g[index]
+            index_matches = @selection.select {|c| @selection[index] == g[index]}
+            puts "Placement matches: #{index_matches.join(", ")}."
+          end
+          false
+        else
+          true
+        end
+        }
+    end
       # compare with guess
       # unless completely correct:
         # first check if any colors are correct, regardless of position
