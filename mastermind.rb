@@ -5,12 +5,20 @@ module Mastermind
     attr_accessor :remaining_turns, :guesses, :selection
     attr_reader :colors, :players, :role
     def initialize(player1, player2)
-      @colors = ["red", "green", "blue", "yellow", "purple", "orange"]
-      @players = [player1.new(self, :codemaker), player2.new(self, :codebreaker)]
-      puts "The computer has a code of four colors. You must guess both the colors and the order."
-      puts "You have twelve turns to break the computer's code!"
+      puts "One player selects a code of four colors,"
+      puts "while the other player must guess the colors and order of the colors."
+      puts "You can be the codemaker or the codebreaker."
+      puts "Do you want to be the codebreaker? (y/n)"
+      choice = gets.chomp
+      if choice == "y"
+        @players = [player1.new(self, :codemaker), player2.new(self, :codebreaker)]
+        puts "You have twelve turns to break the computer's code!"
+        puts "The colors will not repeat, and each place in the code has a color."
+      else
+        @players = [player1.new(self, :codebreaker), player2.new(self, :codemaker)]
+      end
+      @colors = ["red", "green", "blue", "yellow", "purple", "orange"]  
       puts "The possible colors are: #{@colors.join(", ")}."
-      puts "The colors will not repeat, and each place in the code has a color."
       @remaining_turns = 12
     end
 
@@ -19,6 +27,14 @@ module Mastermind
     end
 
     def play
+      if @players[1].role == :codebreaker then
+        play_as_codebreaker
+      else
+        play_as_codemaker
+      end
+    end
+
+    def play_as_codebreaker
       @selection = get_random_colors
       while @remaining_turns <= MAX_TURNS
         @players[1].get_guess
@@ -49,26 +65,11 @@ module Mastermind
     end
 
     def correct_index?(g)
-      # index_match = []
-      # @selection.each_with_index {|val, i|
-      #   @selection.select {|c|
-      #     if c == g[i]
-      #       index_match.push(g[i])
-      #     end
-      #   }
-      # }
-      # puts "#{(index_match & @selection)} were in the correct order."
-      # if (index_match & @selection) == @selection
-      #   true
-      # else
-      #   false
-      # end
       if g == @selection
         puts "All colors were in the correct order"
         true
       else
         ordered = g.map.with_index { |color, i| color == @selection[i]}
-        
         puts "Your placement of colors: #{ordered}."
       end
     end
