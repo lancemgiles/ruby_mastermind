@@ -91,7 +91,7 @@ module Mastermind
         true
       else
         ordered = g.map.with_index { |color, i| color == @selection[i]}
-        puts "Your placement of colors: #{ordered}."
+        puts "Placement of colors: #{ordered}."
       end
     end
 
@@ -160,7 +160,9 @@ module Mastermind
     end
 
     def get_guess
-
+      @game.guesses = @game.colors.shuffle.slice(0,4)
+      puts "The computer guesses #{@game.guesses}."
+      @game.remaining_turns -= 1
     end
   end
 end
