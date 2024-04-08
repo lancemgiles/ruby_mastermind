@@ -5,6 +5,7 @@ module Mastermind
     attr_accessor :remaining_turns, :guesses, :selection, :role
     attr_reader :colors, :players
     def initialize(player1, player2)
+      @colors = ["red", "green", "blue", "yellow", "purple", "orange"]
       puts "One player selects a code of four colors,"
       puts "while the other player must guess the colors and order of the colors."
       puts "You can be the codemaker or the codebreaker."
@@ -19,7 +20,7 @@ module Mastermind
         @computer = player1.new(self, :codebreaker)
         @player = player2.new(self, :codemaker)
       end
-      @colors = ["red", "green", "blue", "yellow", "purple", "orange"]  
+      @colors = ["red", "green", "blue", "yellow", "purple", "orange"]
       puts "The possible colors are: #{@colors.join(", ")}."
       @remaining_turns = 12
     end
@@ -142,13 +143,13 @@ module Mastermind
       @game.guesses = guess
     end
     def select_colors
-      puts "Please select four of the following: #{@colors.join(", ")}."
+      puts "Please select four of the following: #{@game.colors.join(", ")}."
       puts "Choose one at a time."
-      c = Array.new(4)
-      c.each {|color|
+      c = []
+      while c.length < 4
         color = gets.chomp
         c.push(color)
-      }
+      end
       c
     end
   end
