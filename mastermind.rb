@@ -163,6 +163,14 @@ module Mastermind
       @game.guesses = @game.colors.shuffle.slice(0,4)
       puts "The computer guesses #{@game.guesses}."
       @game.remaining_turns -= 1
+
+      # to make the computer make good choices:
+      # the first guess being random is fine
+      # it should then remember if there were any color matches
+      # it should also remember the placement of those matches
+      # in the next guess, it should repeat anything that was correct
+      # for the remaining spaces, it should draw from correct colors
+      # if there are less than four correct colors, it should choose a random one
     end
   end
 end
