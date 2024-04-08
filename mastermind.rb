@@ -2,8 +2,8 @@ module Mastermind
   MAX_TURNS = 12
 
   class Game
-    attr_accessor :remaining_turns, :guesses, :selection
-    attr_reader :colors, :players, :role
+    attr_accessor :remaining_turns, :guesses, :selection, :role
+    attr_reader :colors, :players
     def initialize(player1, player2)
       puts "One player selects a code of four colors,"
       puts "while the other player must guess the colors and order of the colors."
@@ -11,11 +11,13 @@ module Mastermind
       puts "Do you want to be the codebreaker? (y/n)"
       choice = gets.chomp
       if choice == "y"
-        @players = [player1.new(self, :codemaker), player2.new(self, :codebreaker)]
+        @computer = player1.new(self, :codemaker)
+        @player = player2.new(self, :codebreaker)
         puts "You have twelve turns to break the computer's code!"
         puts "The colors will not repeat, and each place in the code has a color."
       else
-        @players = [player1.new(self, :codebreaker), player2.new(self, :codemaker)]
+        @computer = player1.new(self, :codebreaker)
+        @player = player2.new(self, :codemaker)
       end
       @colors = ["red", "green", "blue", "yellow", "purple", "orange"]  
       puts "The possible colors are: #{@colors.join(", ")}."
@@ -27,7 +29,7 @@ module Mastermind
     end
 
     def play
-      if @players[1].role == :codebreaker then
+      if @player.role == :codebreaker then
         play_as_codebreaker
       else
         play_as_codemaker
@@ -37,7 +39,7 @@ module Mastermind
     def play_as_codebreaker
       @selection = get_random_colors
       while @remaining_turns <= MAX_TURNS
-        @players[1].get_guess
+        @player.get_guess
         if correct?(@guesses)
           puts "You won! You had #{@remaining_turns} turns left."
           puts "#{@selection}"
@@ -49,11 +51,29 @@ module Mastermind
           break
         else
           puts "Keep trying!"
-          puts "You have #{remaining_turns} turns left."
+          puts "You have #{@remaining_turns} turns left."
         end
       end
     end
 
+    def play_as_codemaker
+      @selection = @player.select_colors
+      while remaining_turns <= MAX_TURNS
+        @computer.get_guess
+        if correct?(@guesses)
+          puts "The computer has won!"
+          break
+        elsif lose?
+          puts "You win! The computer couldn't guess correctly."
+          break
+        else
+          puts "The computer is going to try again."
+          puts "#{@remaining_turns} turns are left."
+        end
+      end
+    end
+
+    
     def correct_colors?(g)
       if (@selection & @guesses).any?
         puts "#{(@selection & @guesses).sort} are included colors"
@@ -92,6 +112,7 @@ module Mastermind
   end
 
   class Player
+    attr_reader :role
     def initialize(game, role)
       @game = game
       @role = role
@@ -120,11 +141,25 @@ module Mastermind
       @game.remaining_turns -= 1
       @game.guesses = guess
     end
+    def select_colors
+      puts "Please select four of the following: #{@colors.join(", ")}."
+      puts "Choose one at a time."
+      c = Array.new(4)
+      c.each {|color|
+        color = gets.chomp
+        c.push(color)
+      }
+      c
+    end
   end
 
   class Computer < Player  
     def to_s
       "Computer Player, #{@role}"
+    end
+
+    def get_guess
+
     end
   end
 end
