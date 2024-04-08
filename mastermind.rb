@@ -40,7 +40,7 @@ module Mastermind
 
     def correct_colors?(g)
       if (@selection & @guesses).any?
-        puts "#{(@selection & @guesses)} are included colors"
+        puts "#{(@selection & @guesses).sort} are included colors"
         true
       else
         puts "No color matches."
@@ -63,11 +63,14 @@ module Mastermind
       # else
       #   false
       # end
-      if (@selection & g) == @selection
+      if g == @selection
         puts "All colors were in the correct order"
         true
       else
-        puts "#{(@selection & g)} were correctly placed."
+        ordered = g.map.with_index { |color, i| color == @selection[i]}
+        
+        puts "Your placement of colors: #{ordered}."
+      end
     end
 
     def correct?(g)
